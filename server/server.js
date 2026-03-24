@@ -71,14 +71,14 @@ const habitRoutes = require('./routes/habits');
 const examRoutes = require('./routes/exams');
 const planRoutes = require('./routes/plans');
 const taskRoutes = require('./routes/tasks');
-const socialRoutes = require('./routes/social');
+const authRoutes = require('./routes/auth');
 
+app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/habits', habitRoutes);
 app.use('/api/exams', examRoutes);
 app.use('/api/plans', planRoutes);
 app.use('/api/tasks', taskRoutes);
-app.use('/api/social', socialRoutes);
 
 app.listen(PORT, () => {
     console.log('╔════════════════════════════════════════╗');

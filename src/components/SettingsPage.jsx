@@ -1,8 +1,13 @@
-import React, { useState } from 'react';
-import { Settings as SettingsIcon, Palette, Bell, Type, Moon, Sun } from 'lucide-react';
+import React from 'react';
+import { Settings as SettingsIcon, Palette, Bell, Type, Moon, Sun, Download, Smartphone } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { usePWA } from '../hooks/usePWA';
 import ThemeSelector from './ThemeSelector';
 import NotificationSettings from './NotificationSettings';
+
+const Style = ({ children }) => (
+  <style dangerouslySetInnerHTML={{ __html: children }} />
+);
 
 const SettingsPage = ({ user, onUpdateUser }) => {
   const { currentTheme, fontSize, changeFontSize, changeTheme } = useTheme();
@@ -68,10 +73,13 @@ const SettingsPage = ({ user, onUpdateUser }) => {
             <div>Please log in to manage notifications.</div>
           )}
         </section>
+
+        {/* App Installation */}
+        <AppInstallationSection />
       </div>
 
 
-      <style jsx>{`
+      <Style>{`
         .settings-page {
           max-width: 800px;
           margin: 0 auto;
@@ -207,8 +215,117 @@ const SettingsPage = ({ user, onUpdateUser }) => {
           font-weight: 500;
           color: var(--text-main);
         }
-      `}</style>
+      `}</Style>
     </div>
+  );
+};
+
+const AppInstallationSection = () => {
+  const { canInstall, isInstalled, installApp } = usePWA();
+
+  if (!canInstall && !isInstalled) return null;
+
+  return (
+    <section className="settings-section app-install-section">
+      <div className="section-header">
+        <Smartphone size={20} />
+        <h2>App Installation</h2>
+      </div>
+
+      <div className="install-content-wrapper">
+        <div className="install-info">
+          <h3>{isInstalled ? 'App is Installed' : 'Install HabitFlow'}</h3>
+          <p>
+            {isInstalled
+              ? 'You have already installed HabitFlow on this device. You can access it directly from your home screen or applications menu.'
+              : 'Install our app for a better experience, quick access, and offline functionality.'}
+          </p>
+        </div>
+
+        {!isInstalled && canInstall && (
+          <button className="install-btn" onClick={installApp}>
+            <Download size={20} />
+            <span>Install App</span>
+          </button>
+        )}
+
+        {isInstalled && (
+          <div className="installed-badge">
+            <span>✓ Installed</span>
+          </div>
+        )}
+      </div>
+
+      <Style>{`
+        .install-content-wrapper {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          gap: 2rem;
+          padding: 1rem;
+          background: var(--bg-subtle);
+          border-radius: var(--radius-md);
+        }
+
+        .install-info h3 {
+          margin: 0 0 0.5rem 0;
+          font-size: 1.1rem;
+          color: var(--text-main);
+        }
+
+        .install-info p {
+          margin: 0;
+          font-size: 0.9rem;
+          color: var(--text-muted);
+          line-height: 1.5;
+        }
+
+        .install-btn {
+          display: flex;
+          align-items: center;
+          gap: 0.75rem;
+          padding: 0.75rem 1.5rem;
+          background: var(--primary);
+          color: white;
+          border: none;
+          border-radius: var(--radius-md);
+          cursor: pointer;
+          font-weight: 600;
+          white-space: nowrap;
+          transition: all var(--transition-base);
+        }
+
+        .install-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-sm);
+        }
+
+        .installed-badge {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          padding: 0.6rem 1.25rem;
+          background: var(--success);
+          color: white;
+          border-radius: var(--radius-full);
+          font-weight: 600;
+          font-size: 0.9rem;
+          white-space: nowrap;
+        }
+
+        @media (max-width: 600px) {
+          .install-content-wrapper {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 1rem;
+          }
+          .install-btn {
+            width: 100%;
+            justify-content: center;
+          }
+        }
+      `}</Style>
+    </section>
   );
 };
 

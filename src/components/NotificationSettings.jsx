@@ -32,9 +32,8 @@ const NotificationSettings = ({ user, onUpdateUser }) => {
         setReminderTimes(newTimes);
 
         try {
-            await api.updateUser(user._id, { reminderTimes: newTimes });
-            // onUpdateUser handled by parent reload or optimistic? 
-            // Better to update parent
+            const updated = await api.updateUser(user._id, { reminderTimes: newTimes });
+            onUpdateUser(updated);
         } catch (err) {
             console.error('Failed to add time', err);
         }
@@ -45,7 +44,8 @@ const NotificationSettings = ({ user, onUpdateUser }) => {
         setReminderTimes(newTimes);
 
         try {
-            await api.updateUser(user._id, { reminderTimes: newTimes });
+            const updated = await api.updateUser(user._id, { reminderTimes: newTimes });
+            onUpdateUser(updated);
         } catch (err) {
             console.error('Failed to remove time', err);
         }
@@ -61,7 +61,7 @@ const NotificationSettings = ({ user, onUpdateUser }) => {
         if (permission === 'granted') {
             new Notification('Notifications Enabled', {
                 body: 'You will now receive alerts from HabitFlow!',
-                icon: '/icon.png' // Make sure an icon exists or remove
+                icon: '/vite.svg'
             });
         }
     };
@@ -114,12 +114,18 @@ const NotificationSettings = ({ user, onUpdateUser }) => {
                             </div>
                             <div>
                                 <div style={{ fontWeight: 500 }}>Push Notifications</div>
-                                <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Browser alerts when app is open</div>
+                                <div style={{ fontSize: '0.875rem', color: 'var(--text-muted)' }}>Browser alerts when app is open (Click Test to enable)</div>
                             </div>
                         </div>
-                        <button onClick={requestPushPermission} className="btn-sm" style={{ fontSize: '0.8rem', padding: '0.25rem 0.5rem' }}>
-                            Test / Enable
-                        </button>
+                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                            <button onClick={requestPushPermission} className="btn-sm" style={{ fontSize: '0.8rem', padding: '0.25rem 0.5rem' }}>
+                                Test
+                            </button>
+                            <label className="switch">
+                                <input type="checkbox" checked={preferences.push} onChange={() => handleToggle('push')} />
+                                <span className="slider round"></span>
+                            </label>
+                        </div>
                     </div>
                 </div>
 

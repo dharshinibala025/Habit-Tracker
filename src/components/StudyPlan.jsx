@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BookOpen, Calendar, Trash2, Clock, CheckCircle } from 'lucide-react';
 import { format, differenceInDays, parseISO, isPast, isSameDay } from 'date-fns';
+import { api } from '../services/api';
 
 const StudyPlan = ({ userId }) => {
     const [plans, setPlans] = useState([]);

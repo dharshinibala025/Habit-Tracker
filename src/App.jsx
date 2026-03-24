@@ -8,23 +8,30 @@ import AddHabitForm from './components/AddHabitForm';
 import ExamScheduler from './components/ExamScheduler';
 import PunishmentWidget from './components/PunishmentWidget';
 import StudyPlan from './components/StudyPlan';
-import ProfileSelector from './components/ProfileSelector';
 import Analytics from './components/Analytics';
 import SettingsPage from './components/SettingsPage';
 import LevelProgress from './components/LevelProgress';
 import AchievementsList from './components/AchievementsList';
-import SocialHub from './components/SocialHub';
 import MotivationalWidget from './components/MotivationalWidget';
 import NotificationCenter from './components/NotificationCenter';
 import InstallPrompt from './components/InstallPrompt';
 import PomodoroTimer from './components/PomodoroTimer';
+import NotificationScheduler from './components/NotificationScheduler';
 import { getTodayISO } from './utils/dateUtils';
+import AuthPage from './components/AuthPage';
+
+const Style = ({ children }) => (
+  <style dangerouslySetInnerHTML={{ __html: children }} />
+);
+
 import { api } from './services/api';
 import { calculatePoints, checkAchievements, getStreakInfo } from './utils/gamification';
+import ErrorBoundary from './components/ErrorBoundary';
+import { PWAProvider } from './context/PWAContext';
 
 function AppContent() {
   const [currentUser, setCurrentUser] = useState(() => {
-    const saved = localStorage.getItem('habitflow_current_user');
+    const saved = localStorage.getItem('habitflow_user');
     return saved ? JSON.parse(saved) : null;
   });
 
@@ -36,11 +43,11 @@ function AppContent() {
   // Load habits when currentUser changes
   useEffect(() => {
     if (currentUser) {
-      localStorage.setItem('habitflow_current_user', JSON.stringify(currentUser));
+      localStorage.setItem('habitflow_user', JSON.stringify(currentUser));
       loadHabits();
       loadUserData();
     } else {
-      localStorage.removeItem('habitflow_current_user');
+      localStorage.removeItem('habitflow_user');
       setHabits([]);
     }
   }, [currentUser]);
@@ -189,6 +196,7 @@ function AppContent() {
   };
 
   const handleLogout = () => {
+    localStorage.removeItem('habitflow_user');
     setCurrentUser(null);
   };
 
@@ -202,8 +210,19 @@ function AppContent() {
     setNotifications(prev => prev.filter(n => n.id !== id));
   };
 
-  if (!currentUser) {
-    return <ProfileSelector onSelectUser={setCurrentUser} />;
+  const addNotification = (message, type = 'default', title = 'Notification') => {
+    setNotifications(prev => [...prev, {
+      id: Date.now() + Math.random(),
+      title,
+      message,
+      read: false,
+      type,
+      createdAt: new Date().toISOString()
+    }]);
+  };
+
+  if (!currentUser || !currentUser._id) {
+    return <AuthPage onSelectUser={setCurrentUser} />;
   }
 
   return (
@@ -236,13 +255,7 @@ function AppContent() {
             <Trophy size={20} />
             <span>Achievements</span>
           </button>
-          <button
-            className={`nav-tab ${currentView === 'social' ? 'active' : ''}`}
-            onClick={() => setCurrentView('social')}
-          >
-            <Users size={20} />
-            <span>Social</span>
-          </button>
+
           <button
             className={`nav-tab ${currentView === 'settings' ? 'active' : ''}`}
             onClick={() => setCurrentView('settings')}
@@ -308,17 +321,7 @@ function AppContent() {
           </div>
         )}
 
-        {currentView === 'social' && (
-          <div className="container fade-in">
-            <SocialHub
-              currentUserId={currentUser._id}
-              onPointAward={(action) => {
-                const points = calculatePoints(action);
-                updateUserPoints(points);
-              }}
-            />
-          </div>
-        )}
+
 
         {currentView === 'achievements' && (
           <div className="container fade-in">
@@ -357,7 +360,10 @@ function AppContent() {
       {/* PWA Install Prompt */}
       <InstallPrompt />
 
-      <style jsx>{`
+      {/* Daily Reminders Scheduler */}
+      <NotificationScheduler user={currentUser} addNotification={addNotification} />
+
+      <Style>{`
         .app-container {
           min-height: 100vh;
           background: var(--bg-app);
@@ -497,19 +503,19 @@ function AppContent() {
             grid-template-columns: 1fr;
           }
         }
-      `}</style>
+      `}</Style>
     </div>
   );
 }
 
-import ErrorBoundary from './components/ErrorBoundary';
-
 function App() {
   return (
     <ErrorBoundary>
-      <ThemeProvider>
-        <AppContent />
-      </ThemeProvider>
+      <PWAProvider>
+        <ThemeProvider>
+          <AppContent />
+        </ThemeProvider>
+      </PWAProvider>
     </ErrorBoundary>
   );
 }

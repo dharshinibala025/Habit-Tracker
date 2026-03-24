@@ -1,62 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { Download } from 'lucide-react';
 
+import { usePWA } from '../hooks/usePWA';
+
 const InstallPrompt = () => {
-    const [deferredPrompt, setDeferredPrompt] = useState(null);
-    const [showPrompt, setShowPrompt] = useState(false);
+  const { canInstall, installApp } = usePWA();
+  const [showPrompt, setShowPrompt] = useState(false);
 
-    useEffect(() => {
-        const handler = (e) => {
-            e.preventDefault();
-            setDeferredPrompt(e);
-            setShowPrompt(true);
-        };
-
-        window.addEventListener('beforeinstallprompt', handler);
-
-        return () => window.removeEventListener('beforeinstallprompt', handler);
-    }, []);
-
-    const handleInstall = async () => {
-        if (!deferredPrompt) return;
-
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-
-        if (outcome === 'accepted') {
-            setDeferredPrompt(null);
-            setShowPrompt(false);
-        }
-    };
-
-    const handleDismiss = () => {
-        setShowPrompt(false);
-        localStorage.setItem('pwa-install-dismissed', 'true');
-    };
-
-    if (!showPrompt || localStorage.getItem('pwa-install-dismissed')) {
-        return null;
+  useEffect(() => {
+    if (canInstall && !localStorage.getItem('pwa-install-dismissed')) {
+      setShowPrompt(true);
     }
+  }, [canInstall]);
 
-    return (
-        <div className="install-prompt">
-            <div className="install-content">
-                <Download size={24} className="install-icon" />
-                <div className="install-text">
-                    <h4>Install HabitFlow</h4>
-                    <p>Install our app for quick access and offline use</p>
-                </div>
-            </div>
-            <div className="install-actions">
-                <button onClick={handleInstall} className="btn-install">
-                    Install
-                </button>
-                <button onClick={handleDismiss} className="btn-dismiss">
-                    Not now
-                </button>
-            </div>
+  const handleInstall = async () => {
+    const outcome = await installApp();
+    if (outcome === 'accepted') {
+      setShowPrompt(false);
+    }
+  };
 
-            <style jsx>{`
+  const handleDismiss = () => {
+    setShowPrompt(false);
+    localStorage.setItem('pwa-install-dismissed', 'true');
+  };
+
+  if (!showPrompt || localStorage.getItem('pwa-install-dismissed')) {
+    return null;
+  }
+
+  return (
+    <div className="install-prompt">
+      <div className="install-content">
+        <Download size={24} className="install-icon" />
+        <div className="install-text">
+          <h4>Install HabitFlow</h4>
+          <p>Install our app for quick access and offline use</p>
+        </div>
+      </div>
+      <div className="install-actions">
+        <button onClick={handleInstall} className="btn-install">
+          Install
+        </button>
+        <button onClick={handleDismiss} className="btn-dismiss">
+          Not now
+        </button>
+      </div>
+
+      <style jsx>{`
         .install-prompt {
           position: fixed;
           bottom: 2rem;
@@ -144,8 +135,8 @@ const InstallPrompt = () => {
           background: var(--border-strong);
         }
       `}</style>
-        </div>
-    );
+    </div>
+  );
 };
 
 export default InstallPrompt;

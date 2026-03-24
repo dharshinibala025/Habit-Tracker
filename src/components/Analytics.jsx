@@ -28,6 +28,10 @@ ChartJS.register(
     Filler
 );
 
+const Style = ({ children }) => (
+    <style dangerouslySetInnerHTML={{ __html: children }} />
+);
+
 const Analytics = ({ habits = [] }) => {
     const [stats, setStats] = useState({
         totalCompletions: 0,
@@ -173,7 +177,9 @@ const Analytics = ({ habits = [] }) => {
                     data: topHabits.map(h => h.completedDates?.length || 0),
                     backgroundColor: 'rgba(245, 158, 11, 0.6)',
                     borderRadius: 4,
-                    indexAxis: 'y'
+                    indexAxis: 'y',
+                    barThickness: 25,
+                    maxBarThickness: 30
                 }]
             }
         });
@@ -269,7 +275,7 @@ const Analytics = ({ habits = [] }) => {
                 </div>
             </div>
 
-            <style jsx>{`
+            <Style>{`
         .analytics-dashboard {
           padding: 2rem;
         }
@@ -371,7 +377,7 @@ const Analytics = ({ habits = [] }) => {
                 grid-template-columns: 1fr;
             }
         }
-      `}</style>
+      `}</Style>
         </div>
     );
 };

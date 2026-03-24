@@ -50,7 +50,7 @@ const AddHabitForm = ({ onAdd }) => {
                     width: '100%',
                     padding: '0.75rem',
                     justifyContent: 'center',
-                    background: 'white',
+                    background: 'var(--bg-card)',
                     color: 'var(--primary)',
                     border: '1px dashed var(--border-strong)',
                     display: 'flex',
@@ -68,7 +68,7 @@ const AddHabitForm = ({ onAdd }) => {
 
     return (
         <div className="animate-fade-in" style={{
-            background: 'white',
+            background: 'var(--bg-card)',
             border: '1px solid var(--border-strong)',
             padding: '1.5rem',
             borderRadius: '8px',

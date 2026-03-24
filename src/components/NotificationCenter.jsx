@@ -2,95 +2,99 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Bell, X, Check, AlertCircle, Trophy, Users } from 'lucide-react';
 
+const Style = ({ children }) => (
+  <style dangerouslySetInnerHTML={{ __html: children }} />
+);
+
 const NotificationCenter = ({ notifications = [], onMarkAsRead, onDismiss }) => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [unreadCount, setUnreadCount] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
-    useEffect(() => {
-        const unread = notifications.filter(n => !n.read).length;
-        setUnreadCount(unread);
-    }, [notifications]);
+  useEffect(() => {
+    const unread = notifications.filter(n => !n.read).length;
+    setUnreadCount(unread);
+  }, [notifications]);
 
-    const getNotificationIcon = (type) => {
-        switch (type) {
-            case 'achievement':
-                return <Trophy size={20} className="notification-icon achievement" />;
-            case 'friend_request':
-                return <Users size={20} className="notification-icon social" />;
-            case 'streak_warning':
-                return <AlertCircle size={20} className="notification-icon warning" />;
-            default:
-                return <Bell size={20} className="notification-icon default" />;
-        }
-    };
+  const getNotificationIcon = (type) => {
+    switch (type) {
+      case 'achievement':
+        return <Trophy size={20} className="notification-icon achievement" />;
+      case 'friend_request':
+        return <Users size={20} className="notification-icon social" />;
+      case 'streak_warning':
+        return <AlertCircle size={20} className="notification-icon warning" />;
+      default:
+        return <Bell size={20} className="notification-icon default" />;
+    }
+  };
 
-    return (
-        <div className="notification-center">
-            <button
-                className="notification-trigger"
-                onClick={() => setIsOpen(!isOpen)}
-            >
-                <Bell size={24} />
-                {unreadCount > 0 && (
-                    <span className="notification-badge">{unreadCount}</span>
-                )}
+  return (
+    <div className="notification-center">
+      <button
+        className="notification-trigger"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <Bell size={24} />
+        {unreadCount > 0 && (
+          <span className="notification-badge">{unreadCount}</span>
+        )}
+      </button>
+
+      {isOpen && (
+        <div className="notification-dropdown">
+          <div className="notification-header">
+            <h3>Notifications</h3>
+            <button onClick={() => setIsOpen(false)} className="close-btn">
+              <X size={20} />
             </button>
+          </div>
 
-            {isOpen && (
-                <div className="notification-dropdown">
-                    <div className="notification-header">
-                        <h3>Notifications</h3>
-                        <button onClick={() => setIsOpen(false)} className="close-btn">
-                            <X size={20} />
-                        </button>
-                    </div>
-
-                    <div className="notification-list">
-                        {notifications.length === 0 ? (
-                            <div className="empty-state">
-                                <Bell size={48} className="empty-icon" />
-                                <p>No notifications yet</p>
-                            </div>
-                        ) : (
-                            notifications.map((notification) => (
-                                <div
-                                    key={notification.id}
-                                    className={`notification-item ${!notification.read ? 'unread' : ''}`}
-                                >
-                                    {getNotificationIcon(notification.type)}
-                                    <div className="notification-content">
-                                        <h4>{notification.title}</h4>
-                                        <p>{notification.message}</p>
-                                        <span className="notification-time">
-                                            {new Date(notification.createdAt).toLocaleDateString()}
-                                        </span>
-                                    </div>
-                                    <div className="notification-actions">
-                                        {!notification.read && (
-                                            <button
-                                                onClick={() => onMarkAsRead(notification.id)}
-                                                className="action-btn"
-                                                title="Mark as read"
-                                            >
-                                                <Check size={16} />
-                                            </button>
-                                        )}
-                                        <button
-                                            onClick={() => onDismiss(notification.id)}
-                                            className="action-btn"
-                                            title="Dismiss"
-                                        >
-                                            <X size={16} />
-                                        </button>
-                                    </div>
-                                </div>
-                            ))
-                        )}
-                    </div>
+          <div className="notification-list">
+            {notifications.length === 0 ? (
+              <div className="empty-state">
+                <Bell size={48} className="empty-icon" />
+                <p>No notifications yet</p>
+              </div>
+            ) : (
+              notifications.map((notification) => (
+                <div
+                  key={notification.id}
+                  className={`notification-item ${!notification.read ? 'unread' : ''}`}
+                >
+                  {getNotificationIcon(notification.type)}
+                  <div className="notification-content">
+                    <h4>{notification.title}</h4>
+                    <p>{notification.message}</p>
+                    <span className="notification-time">
+                      {new Date(notification.createdAt).toLocaleDateString()}
+                    </span>
+                  </div>
+                  <div className="notification-actions">
+                    {!notification.read && (
+                      <button
+                        onClick={() => onMarkAsRead(notification.id)}
+                        className="action-btn"
+                        title="Mark as read"
+                      >
+                        <Check size={16} />
+                      </button>
+                    )}
+                    <button
+                      onClick={() => onDismiss(notification.id)}
+                      className="action-btn"
+                      title="Dismiss"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
                 </div>
+              ))
             )}
+          </div>
+        </div>
+      )}
 
-            <style jsx>{`
+      <Style>{`
         .notification-center {
           position: relative;
         }
@@ -277,22 +281,22 @@ const NotificationCenter = ({ notifications = [], onMarkAsRead, onDismiss }) => 
           background: var(--bg-card);
           color: var(--text-main);
         }
-      `}</style>
-        </div>
-    );
+      `}</Style>
+    </div>
+  );
 };
 
 NotificationCenter.propTypes = {
-    notifications: PropTypes.arrayOf(PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        type: PropTypes.string.isRequired,
-        title: PropTypes.string.isRequired,
-        message: PropTypes.string.isRequired,
-        read: PropTypes.bool,
-        createdAt: PropTypes.string
-    })),
-    onMarkAsRead: PropTypes.func,
-    onDismiss: PropTypes.func
+  notifications: PropTypes.arrayOf(PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    message: PropTypes.string.isRequired,
+    read: PropTypes.bool,
+    createdAt: PropTypes.string
+  })),
+  onMarkAsRead: PropTypes.func,
+  onDismiss: PropTypes.func
 };
 
 export default NotificationCenter;

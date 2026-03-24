@@ -70,6 +70,8 @@
   --bg-app: var(--color-background);
   --bg-card: var(--color-surface);
   --bg-subtle: #1e293b;
+  --primary-light: rgba(99, 102, 241, 0.15);
+  --primary-dark: #a5b4fc;
   --border-strong: #475569;
   --border-light: #334155;
   --text-main: var(--color-text);
@@ -91,6 +93,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+html {
+  font-size: var(--font-size-base);
 }
 
 body {
@@ -322,11 +328,20 @@ h3 {
   font-size: 1rem;
   color: var(--text-main);
   outline: none;
-  transition: border-color 0.2s;
+
+  /* Expanding line animation */
+  background-image: linear-gradient(to right, var(--primary), var(--primary));
+  background-size: 0% 2px;
+  background-repeat: no-repeat;
+  background-position: bottom center;
+  transition: background-size 0.3s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.3s;
 }
 
 .input-underline:focus {
-  border-color: var(--primary);
+  outline: none;
+  background-size: 100% 2px;
+  border-bottom-color: transparent;
+  /* Hide the original border to show the animated one clearly, or keep it as a track */
 }
 
 /* Utilities */
@@ -447,9 +462,47 @@ h3 {
 }
 
 /* Responsive Design */
+@media (max-width: 1024px) {
+  .container {
+    padding: 2rem 1.5rem;
+  }
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 1.5rem 1rem;
+  }
+
+  /* Navigation tweaks for mobile */
+  .top-nav {
+    padding: 0.75rem 1rem !important;
+    gap: 1rem !important;
+  }
+
+  .nav-brand .app-title {
+    font-size: 1.25rem !important;
+  }
+
+  .nav-tab {
+    padding: 0.5rem 0.75rem !important;
+  }
+
+  .nav-tab span {
+    display: none;
+  }
+
+  .user-info {
+    padding: 0.4rem 0.75rem !important;
+  }
+
+  .user-name {
+    font-size: 0.85rem;
+  }
+
+  /* Dashboard adjustments */
+  .gamification-bar {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
   }
 
   .sheet-table {
@@ -457,12 +510,21 @@ h3 {
   }
 
   .sheet-table td.name-col {
-    min-width: 150px;
+    min-width: 140px;
     padding: 0.25rem 0.75rem;
   }
 
   .component-card {
-    padding: 1rem;
+    padding: 1.25rem;
+  }
+
+  /* Touch-friendly buttons */
+  .btn,
+  .nav-tab,
+  .btn-icon,
+  .check-btn {
+    min-height: 44px;
+    min-width: 44px;
   }
 }
 

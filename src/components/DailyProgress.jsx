@@ -7,8 +7,10 @@ const DailyProgress = ({ habits }) => {
     const today = getTodayISO();
     const [prevPercent, setPrevPercent] = useState(0);
 
+    if (!habits || !Array.isArray(habits)) return null;
+
     const totalHabits = habits.length;
-    const completedToday = habits.filter(h => h.completedDates.includes(today)).length;
+    const completedToday = habits.filter(h => h.completedDates?.includes(today)).length;
 
     const percentage = totalHabits === 0 ? 0 : Math.round((completedToday / totalHabits) * 100);
 

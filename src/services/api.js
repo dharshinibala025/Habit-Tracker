@@ -1,6 +1,19 @@
 const API_URL = 'http://localhost:5000/api';
 
 export const api = {
+    // Auth
+    login: (credentials) => fetch(`${API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials)
+    }).then(res => res.json()),
+
+    register: (userData) => fetch(`${API_URL}/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(userData)
+    }).then(res => res.json()),
+
     // Users
     getUsers: () => fetch(`${API_URL}/users`).then(res => res.json()),
     getUser: (userId) => fetch(`${API_URL}/users/${userId}`).then(res => res.json()),
@@ -63,32 +76,5 @@ export const api = {
     }).then(res => res.json()),
     deleteTask: (id) => fetch(`${API_URL}/tasks/${id}`, { method: 'DELETE' }),
 
-    // Social
-    sendFriendRequest: (fromId, toEmail) => fetch(`${API_URL}/social/friends/request`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fromId, toEmail })
-    }).then(res => res.json()),
-
-    acceptFriendRequest: (userId, requestId) => fetch(`${API_URL}/social/friends/accept`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, requestId })
-    }).then(res => res.json()),
-
-    getFriends: (userId) => fetch(`${API_URL}/social/friends/${userId}`).then(res => res.json()),
-
-    getChallenges: () => fetch(`${API_URL}/social/challenges`).then(res => res.json()),
-
-    createChallenge: (data) => fetch(`${API_URL}/social/challenges`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
-    }).then(res => res.json()),
-
-    joinChallenge: (id, userId) => fetch(`${API_URL}/social/challenges/${id}/join`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId })
-    }).then(res => res.json()),
+    deleteTask: (id) => fetch(`${API_URL}/tasks/${id}`, { method: 'DELETE' }),
 };

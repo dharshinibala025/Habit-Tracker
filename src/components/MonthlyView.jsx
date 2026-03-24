@@ -44,10 +44,10 @@ const MonthlyView = ({ habits, onToggle, onDelete }) => {
                     maxWidth: '700px',
                     width: '100%',
                     background: 'var(--bg-subtle)',
-                    border: '1px solid var(--primary-light)',
+                    border: '1px solid var(--border-light)',
                     borderRadius: '12px',
                     padding: '0.75rem 1.5rem',
-                    color: 'var(--primary-dark)',
+                    color: 'var(--text-main)',
                     fontStyle: 'italic',
                     fontSize: '0.95rem',
                     fontFamily: 'var(--font-serif)',
@@ -55,7 +55,7 @@ const MonthlyView = ({ habits, onToggle, onDelete }) => {
                     boxShadow: 'var(--shadow-sm)'
                 }}>
                     <span style={{ fontWeight: 600, marginRight: '0.5rem', fontStyle: 'normal', color: 'var(--primary)' }}>Quotes:</span>
-                    "{dailyQuote}"
+                    <span style={{ color: 'var(--primary-dark)' }}>"{dailyQuote}"</span>
                 </div>
             </div>
 
@@ -152,8 +152,8 @@ const MonthlyView = ({ habits, onToggle, onDelete }) => {
                         })}
 
                         {/* Daily Percentage Row */}
-                        <tr style={{ background: '#F9FAFB', borderTop: '2px solid var(--border-strong)', fontWeight: 600 }}>
-                            <td style={{ padding: '0.5rem', textAlign: 'right', position: 'sticky', left: 0, background: '#F9FAFB', borderRight: '1px solid var(--border-strong)', fontSize: '0.75rem', color: 'var(--text-muted)' }}>DAILY AVG</td>
+                        <tr style={{ background: 'var(--bg-subtle)', borderTop: '2px solid var(--border-strong)', fontWeight: 600 }}>
+                            <td style={{ padding: '0.5rem', textAlign: 'right', position: 'sticky', left: 0, background: 'var(--bg-subtle)', borderRight: '1px solid var(--border-strong)', fontSize: '0.75rem', color: 'var(--text-muted)' }}>DAILY AVG</td>
                             {monthDays.map(day => {
                                 if (habits.length === 0) return <td key={day}>-</td>;
                                 const completedThatDay = habits.filter(h => h.completedDates.includes(day)).length;
@@ -169,7 +169,7 @@ const MonthlyView = ({ habits, onToggle, onDelete }) => {
             <style jsx>{`
                 .spreadsheet-container {
                     overflow-x: auto;
-                    background: white;
+                    background: var(--bg-card);
                     border: 1px solid var(--border-light);
                     border-radius: 12px;
                     box-shadow: var(--shadow-sm);
@@ -201,7 +201,7 @@ const MonthlyView = ({ habits, onToggle, onDelete }) => {
                 .name-col {
                     text-align: left;
                     font-weight: 500;
-                    background: white;
+                    background: var(--bg-card);
                     padding-left: 1rem;
                 }
 
