@@ -120,7 +120,7 @@ const ExamScheduler = ({ userId }) => {
 
             {/* List */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                {exams.map(exam => {
+                {exams.filter(exam => exam && exam.date).map(exam => {
                     const status = getDaysRemaining(exam.date);
                     const isUrgent = status !== 'Done' && (status === 'Today' || parseInt(status) <= 3);
 
@@ -128,9 +128,9 @@ const ExamScheduler = ({ userId }) => {
                         <div key={exam.id} className="exam-card">
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.25rem' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                    <span className={`type - badge ${exam.type.toLowerCase()} `}>
-                                        {exam.type === 'Exam' ? <BookOpen size={10} /> : <Beaker size={10} />}
-                                        {exam.type}
+                                    <span className={`type-badge ${(exam.type || 'Exam').toLowerCase()}`}>
+                                        {(exam.type || 'Exam') === 'Exam' ? <BookOpen size={10} /> : <Beaker size={10} />}
+                                        {exam.type || 'Exam'}
                                     </span>
                                     <span style={{ fontWeight: 600, fontSize: '0.95rem' }}>{exam.subject}</span>
                                 </div>

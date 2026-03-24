@@ -58,23 +58,24 @@ export const api = {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
     }).then(res => res.json()),
-    togglePlan: (id) => fetch(`${API_URL}/plans/${id}/toggle`, { method: 'PATCH' }),
     deletePlan: (id) => fetch(`${API_URL}/plans/${id}`, { method: 'DELETE' }),
 
     // Special Tasks
     getTasks: (userId) => fetch(`${API_URL}/tasks/${userId}`).then(res => res.json()),
-    createTask: (userId, text) => fetch(`${API_URL}/tasks`, {
+    createTask: (userId, data) => fetch(`${API_URL}/tasks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ userId, text })
+        body: JSON.stringify({ userId, ...data })
     }).then(res => res.json()),
-    toggleTask: (id) => fetch(`${API_URL}/tasks/${id}/toggle`, { method: 'PATCH' }),
-    updateTask: (id, text) => fetch(`${API_URL}/tasks/${id}`, {
+    toggleTask: (id, completed) => fetch(`${API_URL}/tasks/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text })
+        body: JSON.stringify({ completed })
     }).then(res => res.json()),
-    deleteTask: (id) => fetch(`${API_URL}/tasks/${id}`, { method: 'DELETE' }),
-
+    updateTask: (id, updates) => fetch(`${API_URL}/tasks/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updates)
+    }).then(res => res.json()),
     deleteTask: (id) => fetch(`${API_URL}/tasks/${id}`, { method: 'DELETE' }),
 };

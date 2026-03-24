@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "concurrently -n \"FRONTEND,BACKEND\" -c \"bgBlue.bold,bgMagenta.bold\" \"npm run client\" \"npm run server\"",
     "client": "vite",
-    "server": "cd server && npm run dev",
+    "server": "set \"JAVA_HOME=D:\\IntelliJ IDEA 2025.3.4\\jbr\" && set \"PATH=D:\\IntelliJ IDEA 2025.3.4\\jbr\\bin;%PATH%\" && cd java-backend && mvnw.cmd spring-boot:run",
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
